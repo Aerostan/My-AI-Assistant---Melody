@@ -660,6 +660,35 @@
         }
 
         updateProgress();
+
+        // Check for email on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const email = localStorage.getItem('shielddesk_email');
+            if (!email) {
+                document.getElementById('section-0').innerHTML = `
+                    <h2>📬 Enter Your Email</h2>
+                    <p class="section-intro">Please enter your email to save your assessment results.</p>
+                    <div class="form-group">
+                        <label>Your Email</label>
+                        <input type="email" id="userEmail" placeholder="your@email.com" required>
+                    </div>
+                    <div class="nav-btns">
+                        <div></div>
+                        <button class="btn btn-primary" onclick="saveEmailAndStart()">Start Assessment →</button>
+                    </div>
+                `;
+            } else {
+                document.getElementById('completedBy').placeholder = email;
+            }
+        });
+
+        function saveEmailAndStart() {
+            const email = document.getElementById('userEmail').value.trim();
+            if (email) {
+                localStorage.setItem('shielddesk_email', email);
+                window.location.reload();
+            }
+        }
     </script>
 </body>
 </html>
