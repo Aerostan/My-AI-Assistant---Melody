@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldDesk - Cyber Health Check</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            background: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+            padding: 30px;
+            text-align: center;
+            color: #fff;
+        }
+        .header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .header p { opacity: 0.9; }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            transition: width 0.3s ease;
+        }
+        
+        .section { display: none; padding: 30px; }
+        .section.active { display: block; }
+        
+        .section h2 {
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+        .section-intro {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .biz-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: #00d4aa;
+        }
+        
+        .question { margin-bottom: 25px; }
+        .question h3 {
+            font-size: 1rem;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .option {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .option:hover { border-color: #00a8cc; }
+        .option.selected {
+            border-color: #00d4aa;
+            background: rgba(0,212,170,0.1);
+            color: #00a8cc;
+        }
+        .option span {
+            display: block;
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .nav-btns {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            color: #fff;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,212,170,0.3); }
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .btn-secondary:hover { background: #e0e0e0; }
+        
+        .results { display: none; padding: 30px; }
+        .results.active { display: block; }
+        
+        .score-display {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+        .score-number {
+            font-size: 4rem;
+            font-weight: bold;
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .score-label {
+            font-size: 1.3rem;
+            color: #1a1a2e;
+            margin: 10px 0;
+        }
+        .score-status {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .status-good { background: #d4edda; color: #155724; }
+        .status-moderate { background: #fff3cd; color: #856404; }
+        .status-high { background: #f8d7da; color: #721c24; }
+        
+        .module-scores { margin-bottom: 25px; }
+        .module-score {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .module-name { flex: 1; font-weight: 600; color: #1a1a2e; }
+        .module-bar {
+            width: 120px;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        .module-bar-fill { height: 100%; transition: width 0.5s ease; }
+        .module-value { font-weight: 600; color: #666; width: 50px; text-align: right; }
+        
+        .recommendations h3 {
+            color: #1a1a2e;
+            margin-bottom: 15px;
+        }
+        .rec-list { list-style: none; }
+        .rec-list li {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00d4aa;
+        }
+        
+        .cta-box {
+            background: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            color: #fff;
+            margin-top: 25px;
+        }
+        .cta-box h3 { margin-bottom: 10px; }
+        .cta-box p { opacity: 0.9; margin-bottom: 15px; }
+        .cta-box .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        .module-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        @media (max-width: 600px) {
+            .biz-info { grid-template-columns: 1fr; }
+            .options { flex-direction: column; }
+            .option { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ ShieldDesk Cyber Health Check</h1>
+            <p>Assess your cybersecurity posture in 5 minutes</p>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+        <!-- Business Info Section -->
+        <div class="section active" id="section-0">
+            <h2>Business Information</h2>
+            <p class="section-intro">Please provide some basic information about your business.</p>
+            <div class="biz-info">
+                <div class="form-group">
+                    <label>Business Name</label>
+                    <input type="text" id="bizName" placeholder="Your business name">
+                </div>
+                <div class="form-group">
+                    <label>Completed By</label>
+                    <input type="text" id="completedBy" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Your Role</label>
+                    <input type="text" id="yourRole" placeholder="Your role">
+                </div>
+                <div class="form-group">
+                    <label>Industry</label>
+                    <input type="text" id="industry" placeholder="e.g., Healthcare, Retail">
+                </div>
+            </div>
+            <div class="nav-btns">
+                <div></div>
+                <button class="btn btn-primary" onclick="nextSection()">Start Assessment →</button>
+            </div>
+        </div>
+
+        <!-- Module 1: Passwords & Access Control -->
+        <div class="section" id="section-1">
+            <div class="module-header">
+                <div class="module-icon">🔐</div>
+                <div>
+                    <h2>Module 1: Passwords & Access Control</h2>
+                    <p class="section-intro">Who can get in, and how easily? More than 80% of data breaches involve compromised credentials.</p>
+                </div>
+            </div>
+            <div class="question" data-module="1" data-q="1">
+                <h3>1.1 Every employee uses a unique, strong password for every business system and application.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="1" data-q="2">
+                <h3>1.2 We use a business password manager to store and manage credentials securely.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="1" data-q="3">
+                <h3>1.3 Multi-factor authentication is enabled on all critical systems, including email, accounting software, and cloud storage.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="1" data-q="4">
+                <h3>1.4 When an employee leaves the business, their access to all systems is revoked within 24 hours.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="nav-btns">
+                <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+                <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Module 2: Software & Device Security -->
+        <div class="section" id="section-2">
+            <div class="module-header">
+                <div class="module-icon">💻</div>
+                <div>
+                    <h2>Module 2: Software & Device Security</h2>
+                    <p class="section-intro">Are your tools and devices up to date, or full of holes? Every unpatched software is an open door.</p>
+                </div>
+            </div>
+            <div class="question" data-module="2" data-q="1">
+                <h3>2.1 Operating systems and software on all business devices receive automatic security updates and are kept current.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="2" data-q="2">
+                <h3>2.2 All business devices have active, up-to-date endpoint protection installed.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="2" data-q="3">
+                <h3>2.3 We maintain an inventory of all devices that connect to our business network, including personal devices used for work.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="2" data-q="4">
+                <h3>2.4 Our business Wi-Fi network is separated from any guest or personal device network and uses current encryption standards.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="nav-btns">
+                <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+                <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Module 3: Email & Communications Security -->
+        <div class="section" id="section-3">
+            <div class="module-header">
+                <div class="module-icon">📧</div>
+                <div>
+                    <h2>Module 3: Email & Communications Security</h2>
+                    <p class="section-intro">Could someone impersonate you — and would you even know? Business Email Compromise cost US businesses over $2.9 billion in 2023.</p>
+                </div>
+            </div>
+            <div class="question" data-module="3" data-q="1">
+                <h3>3.1 Our business email domain is correctly configured to prevent impersonation and spoofing attacks.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="3" data-q="2">
+                <h3>3.2 Staff have received training to identify phishing emails, suspicious links, and social engineering attempts within the last 12 months.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="3" data-q="3">
+                <h3>3.3 We have a clear process for staff to report a suspicious email or potential phishing attempt without fear of embarrassment.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="3" data-q="4">
+                <h3>3.4 Payment or banking change requests received by email are always verbally verified before any action is taken — no exceptions.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="nav-btns">
+                <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+                <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Module 4: Third-Party & Supplier Access -->
+        <div class="section" id="section-4">
+            <div class="module-header">
+                <div class="module-icon">🤝</div>
+                <div>
+                    <h2>Module 4: Third-Party & Supplier Access</h2>
+                    <p class="section-intro">Who else has access to your systems? Vendor compromises are a leading attack vector.</p>
+                </div>
+            </div>
+            <div class="question" data-module="4" data-q="1">
+                <h3>4.1 We maintain a documented list of all third-party vendors and contractors with access to our systems or data.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="4" data-q="2">
+                <h3>4.2 All third-party vendors are required to sign a data protection or security agreement before gaining access.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="4" data-q="3">
+                <h3>4.3 We regularly review and remove access for vendors who no longer need it.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="4" data-q="4">
+                <h3>4.4 We assess the security practices of critical vendors at least annually.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="nav-btns">
+                <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+                <button class="btn btn-primary" onclick="nextSection()">Next →</button>
+            </div>
+        </div>
+
+        <!-- Module 5: Backup & Disaster Recovery -->
+        <div class="section" id="section-5">
+            <div class="module-header">
+                <div class="module-icon">💾</div>
+                <div>
+                    <h2>Module 5: Backup & Disaster Recovery</h2>
+                    <p class="section-intro">Can you recover if everything is encrypted? A solid backup strategy is your insurance policy.</p>
+                </div>
+            </div>
+            <div class="question" data-module="5" data-q="1">
+                <h3>5.1 We maintain regular backups of all critical business data (at least daily).</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="5" data-q="2">
+                <h3>5.2 Backups are stored in a separate location (off-site or cloud) and are not connected to your main network.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="5" data-q="3">
+                <h3>5.3 We regularly test our backup and recovery procedures to ensure they actually work.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="question" data-module="5" data-q="4">
+                <h3>5.4 Our team knows the steps to recover from a ransomware attack or data loss incident.</h3>
+                <div class="options">
+                    <div class="option" data-value="1" onclick="selectOption(this)">1 <span>Not in place</span></div>
+                    <div class="option" data-value="2" onclick="selectOption(this)">2 <span>Partially in place</span></div>
+                    <div class="option" data-value="3" onclick="selectOption(this)">3 <span>Fully in place</span></div>
+                </div>
+            </div>
+            <div class="nav-btns">
+                <button class="btn btn-secondary" onclick="prevSection()">← Back</button>
+                <button class="btn btn-primary" onclick="calculateResults()">See Results →</button>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results" id="results">
+            <h2>📊 Your Cyber Health Results</h2>
+            <div class="score-display">
+                <div class="score-number" id="totalScore">0/60</div>
+                <div class="score-label" id="scorePercent">0%</div>
+                <div class="score-status" id="scoreStatus">Calculating...</div>
+            </div>
+            <div class="module-scores" id="moduleScores"></div>
+            <div class="recommendations">
+                <h3>📋 Priority Areas</h3>
+                <ul class="rec-list" id="recList"></ul>
+            </div>
+            <div class="cta-box">
+                <h3>Need Help Improving Your Score?</h3>
+                <p>The ShieldDesk Compliance Navigator provides a comprehensive roadmap to address your cybersecurity gaps.</p>
+                <div class="price">$197</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSection = 0;
+        const answers = {};
+
+        function updateProgress() {
+            const total = 6;
+            const pct = ((currentSection + 1) / total) * 100;
+            document.getElementById('progress').style.width = pct + '%';
+        }
+
+        function showSection(n) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('section-' + n).classList.add('active');
+            currentSection = n;
+            updateProgress();
+        }
+
+        function nextSection() {
+            if (currentSection === 0) {
+                // Skip validation for business info - optional
+            }
+            if (currentSection < 5) {
+                showSection(currentSection + 1);
+            } else {
+                calculateResults();
+            }
+        }
+
+        function prevSection() {
+            if (currentSection > 0) {
+                showSection(currentSection - 1);
+            }
+        }
+
+        function selectOption(el) {
+            const options = el.parentElement.querySelectorAll('.option');
+            options.forEach(o => o.classList.remove('selected'));
+            el.classList.add('selected');
+            
+            const q = el.closest('.question');
+            const module = q.dataset.module;
+            const qNum = q.dataset.q;
+            answers[module + '-' + qNum] = parseInt(el.dataset.value);
+        }
+
+        function calculateResults() {
+            let total = 0;
+            const modules = {
+                1: { name: '🔐 Passwords & Access', score: 0, max: 12 },
+                2: { name: '💻 Device Security', score: 0, max: 12 },
+                3: { name: '📧 Email Security', score: 0, max: 12 },
+                4: { name: '🤝 Vendor Security', score: 0, max: 12 },
+                5: { name: '💾 Backup & Recovery', score: 0, max: 12 }
+            };
+            const lowScoring = [];
+
+            for (let m = 1; m <= 5; m++) {
+                for (let q = 1; q <= 4; q++) {
+                    const val = answers[m + '-' + q] || 0;
+                    modules[m].score += val;
+                    total += val;
+                    if (val < 3) {
+                        lowScoring.push({ module: m, q: q, score: val });
+                    }
+                }
+            }
+
+            const pct = Math.round((total / 60) * 100);
+            
+            let status, statusClass;
+            if (pct >= 83) {
+                status = '🟢 Good Standing';
+                statusClass = 'status-good';
+            } else if (pct >= 58) {
+                status = '🟡 Moderate Risk';
+                statusClass = 'status-moderate';
+            } else {
+                status = '🔴 High Risk';
+                statusClass = 'status-high';
+            }
+
+            document.getElementById('section-5').classList.remove('active');
+            const results = document.getElementById('results');
+            results.classList.add('active');
+
+            document.getElementById('totalScore').textContent = total + '/60';
+            document.getElementById('scorePercent').textContent = pct + '%';
+            const statusEl = document.getElementById('scoreStatus');
+            statusEl.textContent = status;
+            statusEl.className = 'score-status ' + statusClass;
+
+            const moduleHtml = Object.entries(modules).map(([id, m]) => {
+                const modPct = Math.round((m.score / m.max) * 100);
+                const color = modPct >= 83 ? '#28a745' : modPct >= 58 ? '#ffc107' : '#dc3545';
+                return `
+                    <div class="module-score">
+                        <div class="module-name">${m.name}</div>
+                        <div class="module-bar">
+                            <div class="module-bar-fill" style="width: ${modPct}%; background: ${color};"></div>
+                        </div>
+                        <div class="module-value">${m.score}/${m.max}</div>
+                    </div>
+                `;
+            }).join('');
+            document.getElementById('moduleScores').innerHTML = moduleHtml;
+
+            const recommendations = lowScoring.slice(0, 6);
+            const recHtml = recommendations.map(r => {
+                const qTexts = {
+                    1: { 1: 'Unique strong passwords', 2: 'Password manager', 3: 'MFA enabled', 4: 'Offboarding process' },
+                    2: { 1: 'Auto-updates', 2: 'Endpoint protection', 3: 'Device inventory', 4: 'Wi-Fi separation' },
+                    3: { 1: 'Email protection (DMARC)', 2: 'Phishing training', 3: 'Reporting process', 4: 'Payment verification' },
+                    4: { 1: 'Vendor list', 2: 'Security agreements', 3: 'Access reviews', 4: 'Vendor assessments' },
+                    5: { 1: 'Regular backups', 2: 'Off-site storage', 3: 'Recovery testing', 4: 'Incident response plan' }
+                };
+                return `<li><strong>Module ${r.module}:</strong> ${qTexts[r.module][r.q]} needs improvement (currently: ${r.score}/3)</li>`;
+            }).join('');
+            document.getElementById('recList').innerHTML = recHtml || '<li>🎉 Great job! All areas scoring well.</li>';
+
+            updateProgress();
+        }
+
+        updateProgress();
+    </script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldDesk - Cyber Health Check</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+        }
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            background: linear-gradient(180deg, rgba(0,212,170,0.1) 0%, transparent 100%);
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            color: #a0a0b0;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+        .hero .shield-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+        .feature {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            padding: 30px;
+            transition: transform 0.3s ease;
+        }
+        .feature:hover { transform: translateY(-5px); }
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        .feature h3 {
+            color: #00d4aa;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .feature p {
+            color: #a0a0b0;
+            line-height: 1.5;
+        }
+        .cta-section {
+            text-align: center;
+            padding: 60px 20px;
+            background: rgba(0,212,170,0.05);
+        }
+        .cta-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            color: #1a1a2e;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0,212,170,0.3);
+        }
+        .trust-badges {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        .trust-item {
+            color: #a0a0b0;
+            font-size: 0.9rem;
+        }
+        .trust-item span { color: #00d4aa; }
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #606070;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <section class="hero">
+        <div class="shield-icon">🛡️</div>
+        <h1>How Secure Is Your Business?</h1>
+        <p>Take our free Cyber Health Assessment and discover your organization's cybersecurity posture across 5 critical areas — in just 5 minutes.</p>
+    </section>
+
+    <section class="features">
+        <div class="feature">
+            <div class="feature-icon">🔐</div>
+            <h3>Passwords & Access</h3>
+            <p>Assess who can access your systems and how your credentials are protected.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">💻</div>
+            <h3>Device Security</h3>
+            <p>Check if your software and devices are up-to-date and protected.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">📧</div>
+            <h3>Email Protection</h3>
+            <p>Evaluate your defenses against phishing and business email compromise.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">🤝</div>
+            <h3>Vendor Security</h3>
+            <p>Review how third-party access to your systems is managed.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">💾</div>
+            <h3>Backups & Recovery</h3>
+            <p>Ensure you can recover from ransomware or data loss.</p>
+        </div>
+        <div class="feature">
+            <div class="feature-icon">📊</div>
+            <h3>Instant Results</h3>
+            <p>Get immediate scoring and actionable recommendations.</p>
+        </div>
+    </section>
+
+    <section class="cta-section">
+        <a href="app.html" class="cta-btn">Start Free Assessment →</a>
+        <div class="trust-badges">
+            <div class="trust-item"><span>✓</span> Free</div>
+            <div class="trust-item"><span>✓</span> Takes 5-10 Minutes</div>
+            <div class="trust-item"><span>✓</span> Instant Results</div>
+            <div class="trust-item"><span>✓</span> No Email Required</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© ShieldDesk 2026 — Confidential</p>
+    </footer>
+</body>
+</html>
