@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldDesk Compliance Navigator — Complete Cybersecurity Guide</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            line-height: 1.6;
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(180deg, rgba(0,212,170,0.15) 0%, transparent 100%);
+        }
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero .subtitle {
+            font-size: 1.3rem;
+            color: #a0a0b0;
+            max-width: 650px;
+            margin: 0 auto 25px;
+        }
+        .hero-icon { font-size: 4rem; margin-bottom: 15px; }
+        
+        /* Price */
+        .price-box {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid #00d4aa;
+            border-radius: 15px;
+            padding: 20px 40px;
+            margin: 20px 0;
+        }
+        .price-label { color: #a0a0b0; font-size: 0.9rem; }
+        .price { font-size: 3rem; font-weight: bold; color: #00d4aa; }
+        .price-strike { color: #666; text-decoration: line-through; font-size: 1.2rem; }
+        
+        /* CTA */
+        .cta-btn {
+            display: inline-block;
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            color: #1a1a2e;
+            padding: 18px 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 10px;
+        }
+        .cta-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 40px rgba(0,212,170,0.4);
+        }
+        
+        /* Content */
+        .content {
+            background: rgba(255,255,255,0.03);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .content h2 {
+            color: #00d4aa;
+            font-size: 1.8rem;
+            margin: 30px 0 15px;
+        }
+        .content p { color: #c0c0d0; margin-bottom: 15px; }
+        
+        /* What's Inside */
+        .modules {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        .module {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 4px solid #00d4aa;
+        }
+        .module h3 {
+            color: #00d4aa;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .module p { color: #a0a0b0; font-size: 0.9rem; }
+        
+        /* Features List */
+        .features-list {
+            list-style: none;
+            margin: 20px 0;
+        }
+        .features-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+        }
+        .features-list li::before {
+            content: "✓";
+            color: #00d4aa;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+        
+        /* Social Proof */
+        .social-proof {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(0,212,170,0.05);
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        .social-proof h3 { color: #00d4aa; margin-bottom: 20px; }
+        
+        /* Guarantee */
+        .guarantee {
+            text-align: center;
+            padding: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        .guarantee-icon { font-size: 3rem; margin-bottom: 10px; }
+        
+        /* FAQ */
+        .faq { margin: 30px 0; }
+        .faq-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        .faq-q { color: #fff; font-weight: 600; margin-bottom: 8px; }
+        .faq-a { color: #a0a0b0; font-size: 0.95rem; }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #606070;
+            font-size: 0.85rem;
+        }
+        
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.8rem; }
+            .price { font-size: 2.2rem; }
+            .cta-btn { width: 100%; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <div class="hero-icon">🧭</div>
+            <h1>Compliance Navigator</h1>
+            <p class="subtitle">The complete cybersecurity compliance guide that transforms your assessment results into a actionable roadmap — without hiring a consultant.</p>
+            
+            <div class="price-box">
+                <div class="price-label">One-time payment</div>
+                <div class="price-strike">$197</div>
+                <div class="price">$127</div>
+            </div>
+            
+            <div>
+                <a href="#" class="cta-btn">Get Instant Access →</a>
+            </div>
+            <p style="color: #606070; font-size: 0.85rem; margin-top: 15px;">
+                🔒 Secure checkout • Instant download • 30-day guarantee
+            </p>
+        </section>
+
+        <section class="content">
+            <h2>Why SMBs Are Choosing This Guide</h2>
+            <p>You took the assessment. You know your gaps. Now what?</p>
+            <p>Most business owners finish their cyber health check and think: <em>"Now I need to hire someone to figure out what to do next."</em></p>
+            <p><strong>The Compliance Navigator replaces that consultant.</strong> It's a working guide — not a textbook — built specifically for busy business owners who need clear, actionable steps without the jargon.</p>
+        </section>
+
+        <section class="modules">
+            <div class="module">
+                <h3>📋 Module 1</h3>
+                <h3>Compliance Readiness Assessment</h3>
+                <p>Self-assessment mapped to NIST CSF 2.0 — the same framework used by cyber insurers and enterprise procurement teams.</p>
+            </div>
+            <div class="module">
+                <h3>🎯 Module 2</h3>
+                <h3>Cyber Risk Exposure Snapshot</h3>
+                <p>Know your actual exposure across the 5 attack vectors responsible for 80%+ of small business breaches.</p>
+            </div>
+            <div class="module">
+                <h3>🤝 Module 3</h3>
+                <h3>Supplier Risk Register</h3>
+                <p>Template to assess every vendor's security posture — know who's a liability before they become your problem.</p>
+            </div>
+            <div class="module">
+                <h3>🚨 Module 4</h3>
+                <h3>Incident Response Playbook</h3>
+                <p>Exactly what to do in the first 72 hours of a cyber incident — including legal obligations and communication templates.</p>
+            </div>
+        </section>
+
+        <section class="content">
+            <h2>What's Included</h2>
+            <ul class="features-list">
+                <li>120+ page comprehensive PDF guide</li>
+                <li>NIST CSF 2.0 compliance scoring (102-point assessment)</li>
+                <li>5 attack vector exposure assessments with immediate action steps</li>
+                <li>Supplier risk register template (rate and categorise 10+ vendors)</li>
+                <li>72-hour incident response playbook with checklists</li>
+                <li>Customer & regulatory notification templates</li>
+                <li>Industry overlays: HIPAA, CMMC, GLBA, PCI DSS</li>
+                <li>90-day remediation roadmap template</li>
+                <li>Evidence pack for cyber insurers</li>
+                <li>Declaration document for compliance proof</li>
+            </ul>
+        </section>
+
+        <section class="social-proof">
+            <h3>Who Is This For?</h3>
+            <p style="color: #a0a0b0; max-width: 600px; margin: 0 auto;">
+                Business owners, operations managers, and COOs in healthcare, professional services, financial services, defense contractors, and retail — anyone who needs to demonstrate cybersecurity compliance without building an IT team.
+            </p>
+        </section>
+
+        <section class="content">
+            <h2>What You'll Achieve</h2>
+            <ul class="features-list">
+                <li><strong>Documented compliance posture</strong> your cyber insurer wants to see</li>
+                <li><strong>Risk register</strong> showing your real exposure to attacks</li>
+                <li><strong>Vendor assessment framework</strong> to identify liability before it becomes your problem</li>
+                <li><strong>Incident response plan</strong> so you're not making it up under pressure</li>
+                <li><strong>Evidence pack</strong> ready for enterprise client RFPs</li>
+                <li><strong>Regulatory readiness</strong> for HIPAA, CMMC, GLBA, and PCI DSS</li>
+            </ul>
+        </section>
+
+        <section class="guarantee">
+            <div class="guarantee-icon">🛡️</div>
+            <h3 style="color: #00d4aa; margin-bottom: 10px;">30-Day Money-Back Guarantee</h3>
+            <p style="color: #a0a0b0;">
+                If this guide doesn't help you get organised, I'll refund your purchase — no questions asked. You have nothing to lose.
+            </p>
+        </section>
+
+        <section class="faq">
+            <h2 style="color: #00d4aa; margin-bottom: 20px; text-align: center;">Frequently Asked Questions</h2>
+            
+            <div class="faq-item">
+                <div class="faq-q">How do I receive the guide?</div>
+                <div class="faq-a">Immediately after purchase, you'll get a download link sent to your email. The PDF is ready to use — just fill in the templates.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q">Do I need to be technical to use this?</div>
+                <div class="faq-a">No. The guide is written for business owners, not IT professionals. No technical background required.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q">Is this only for US businesses?</div>
+                <div class="faq-a">Yes — it's specifically designed around US regulations (NIST, HIPAA, CMMC, GLBA, state breach laws). If you're outside the US, some sections may not apply.</div>
+            </div>
+            
+            <div class="faq-item">
+                <div class="faq-q">Can I share this with my team?</div>
+                <div class="faq-a">The license is for single-business use. For multiple locations or teams, please purchase additional licenses.</div>
+            </div>
+        </section>
+
+        <section style="text-align: center; padding: 40px 20px;">
+            <h2 style="margin-bottom: 15px;">Ready to Get Compliant?</h2>
+            <p style="color: #a0a0b0; margin-bottom: 25px;">Join hundreds of SMBs who are taking control of their security.</p>
+            
+            <div class="price-box" style="margin-bottom: 25px;">
+                <div class="price-label">One-time payment</div>
+                <div class="price-strike">$197</div>
+                <div class="price">$127</div>
+            </div>
+            
+            <a href="#" class="cta-btn">Get Instant Access →</a>
+            <p style="color: #606070; font-size: 0.85rem; margin-top: 15px;">
+                🔒 Secure checkout • Instant download • 30-day guarantee
+            </p>
+        </section>
+
+        <footer>
+            <p>© ShieldDesk 2026 — Confidential — Licensed for single business use only.</p>
+        </footer>
+    </div>
+</body>
+</html>
