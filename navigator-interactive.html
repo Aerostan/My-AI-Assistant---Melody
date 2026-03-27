@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldDesk Compliance Navigator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .header {
+            background: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+            padding: 30px;
+            text-align: center;
+            color: #fff;
+        }
+        .header h1 { font-size: 1.8rem; margin-bottom: 8px; }
+        .header p { opacity: 0.9; }
+        
+        .progress-bar {
+            height: 6px;
+            background: #e0e0e0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #00d4aa, #00a8cc);
+            transition: width 0.3s ease;
+        }
+        
+        .section { display: none; padding: 30px; }
+        .section.active { display: block; }
+        
+        .section h2 {
+            color: #1a1a2e;
+            margin-bottom: 8px;
+            font-size: 1.4rem;
+        }
+        .section-intro {
+            color: #666;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .biz-info { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #1a1a2e;
+            font-size: 0.9rem;
+        }
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none;
+            border-color: #00d4aa;
+        }
+        .form-group textarea { min-height: 80px; resize: vertical; }
+        
+        .question { margin-bottom: 25px; }
+        .question h3 {
+            font-size: 1rem;
+            color: #1a1a2e;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+        .options { display: flex; gap: 10px; flex-wrap: wrap; }
+        .option {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .option:hover { border-color: #00a8cc; }
+        .option.selected {
+            border-color: #00d4aa;
+            background: linear-gradient(135deg, #e8f8f5 0%, #d4f4eb 100%);
+        }
+        
+        .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+        .checkbox-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .checkbox-item:hover { background: #f8f9fa; }
+        .checkbox-item input[type="checkbox"] { width: auto; margin-top: 3px; }
+        .checkbox-item label { flex: 1; font-size: 0.9rem; line-height: 1.4; }
+        
+        .resource-box {
+            background: #e8f4f8;
+            border: 1px solid #b8dbe8;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .resource-box h4 { color: #0077b6; margin-bottom: 10px; }
+        .resource-box a {
+            color: #0077b6;
+            text-decoration: none;
+            display: block;
+            padding: 5px 0;
+        }
+        .resource-box a:hover { text-decoration: underline; }
+        
+        .template-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .template-box h4 { color: #856404; margin-bottom: 10px; }
+        .template-box pre {
+            background: #fff;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .vendor-table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        .vendor-table th {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+        .vendor-table td { padding: 8px; border-bottom: 1px solid #eee; }
+        .vendor-table input, .vendor-table select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+        }
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-prev { background: #6c757d; color: #fff; }
+        .btn-next { background: #00d4aa; color: #1a1a2e; font-weight: bold; }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        
+        .compliance-page {
+            background: #1a1a2e;
+            color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+        .compliance-page h3 { color: #00d4aa; margin-bottom: 15px; }
+        .compliance-page .field {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+        .compliance-page label { color: #00d4aa; font-weight: 600; font-size: 0.9rem; }
+        .compliance-page .field-value { color: #fff; font-size: 1rem; padding: 5px 0; }
+        
+        .score-display {
+            text-align: center;
+            padding: 30px;
+        }
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00d4aa 0%, #00a8cc 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1a1a2e;
+        }
+        .score-label { font-size: 1.2rem; color: #1a1a2e; margin-bottom: 10px; }
+        
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .checklist-item input[type="checkbox"] { width: auto; transform: scale(1.3); }
+        .checklist-item.checked { background: #d4f4eb; }
+        
+        @media print {
+            .buttons, .progress-bar { display: none; }
+            .section { display: block !important; page-break-inside: avoid; }
+            body { background: #fff; }
+            .container { box-shadow: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ ShieldDesk Compliance Navigator</h1>
+            <p>Your comprehensive cybersecurity compliance roadmap</p>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress" style="width: 16.67%"></div>
+        </div>
+        
+        <!-- Section 1: Business Info -->
+        <div class="section active" id="section-1">
+            <h2>📋 Business Information</h2>
+            <p class="section-intro">Let's start with the basics about your business.</p>
+            
+            <div class="biz-info">
+                <div class="form-group">
+                    <label>Business Name</label>
+                    <input type="text" id="bizName" placeholder="Your business name">
+                </div>
+                <div class="form-group">
+                    <label>Completed By</label>
+                    <input type="text" id="completedBy" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="text" id="date" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Industry</label>
+                    <input type="text" id="industry" placeholder="e.g., Healthcare, Retail">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Business Email</label>
+                <input type="email" id="bizEmail" placeholder="contact@yourbusiness.com">
+            </div>
+        </div>
+        
+        <!-- Section 2: Compliance Assessment -->
+        <div class="section" id="section-2">
+            <h2>📋 Module 1: Compliance Readiness</h2>
+            <p class="section-intro">Map your business to the NIST Cybersecurity Framework 2.0 — the gold standard used by cyber insurers and enterprise procurement teams.</p>
+            
+            <h3 style="color:#00a8cc;margin:20px 0 15px;">1.1 Governance</h3>
+            
+            <div class="question">
+                <h3>Does your business have a documented information security policy?</h3>
+                <div class="options">
+                    <div class="option" data-value="full" data-question="g1">✓ Yes — written & distributed</div>
+                    <div class="option" data-value="partial" data-question="g1">⚠ Partial — some policies</div>
+                    <div class="option" data-value="no" data-question="g1">✗ No formal policy</div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>Has someone been designated as responsible for cybersecurity?</h3>
+                <div class="options">
+                    <div class="option" data-value="internal" data-question="g2">✓ Yes — internal owner</div>
+                    <div class="option" data-value="external" data-question="g2">✓ Yes — external consultant</div>
+                    <div class="option" data-value="no" data-question="g2">✗ No one assigned</div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>Do you conduct annual risk assessments?</h3>
+                <div class="options">
+                    <div class="option" data-value="annual" data-question="g3">✓ Yes — formal annually</div>
+                    <div class="option" data-value="informal" data-question="g3">⚠ Informal/reactive</div>
+                    <div class="option" data-value="no" data-question="g3">✗ Never done</div>
+                </div>
+            </div>
+            
+            <h3 style="color:#00a8cc;margin:20px 0 15px;">1.2 Technical Controls</h3>
+            
+            <div class="form-group">
+                <label>Network Security — How is your network secured?</label>
+                <textarea id="networkSecurity" placeholder="Firewall, segmentation, WiFi security..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Data Protection — How do you encrypt data?</label>
+                <textarea id="dataProtection" placeholder="Full disk encryption, TLS, encrypted backups..."></textarea>
+            </div>
+            
+            <div class="resource-box">
+                <h4>🔗 Government Resources</h4>
+                <a href="https://www.cisa.gov/news-events/cybersecurity-guidance" target="_blank">CISA Cybersecurity Guidance</a>
+                <a href="https://www.nist.gov/cyberframework" target="_blank">NIST Cybersecurity Framework</a>
+                <a href="https://www.ftc.gov/business-guidance/small-business-cybersecurity" target="_blank">FTC Small Business Cybersecurity</a>
+            </div>
+        </div>
+        
+        <!-- Section 3: Incident Response -->
+        <div class="section" id="section-3">
+            <h2>🚨 Module 2: Incident Response</h2>
+            <p class="section-intro">Follow these steps IMMEDIATELY if you suspect a cyber incident. Time is critical.</p>
+            
+            <h3 style="color:#00a8cc;margin:20px 0 15px;">First 72 Hours Checklist</h3>
+            
+            <div class="question">
+                <h3>Hour 0-4: Detect & Contain</h3>
+                <div class="checkbox-group">
+                    <div class="checklist-item" data-check="ir1"><input type="checkbox"><label>Disconnect affected computers from network</label></div>
+                    <div class="checklist-item" data-check="ir2"><input type="checkbox"><label>Disable remote access (RDP, VPN)</label></div>
+                    <div class="checklist-item" data-check="ir3"><input type="checkbox"><label>Change passwords for all business accounts</label></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>Hour 4-12: Assess — Document what happened</h3>
+                <div class="form-group">
+                    <label>What systems are affected?</label>
+                    <textarea id="incidentSystems" placeholder="List affected systems..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>What data may be exposed?</label>
+                    <textarea id="incidentData" placeholder="Customer data, financial records..."></textarea>
+                </div>
+            </div>
+            
+            <h3 style="color:#00a8cc;margin:20px 0 15px;">Sample Notification Letters</h3>
+            
+            <div class="template-box">
+                <h4>📝 Individual Breach Notification</h4>
+                <pre>[Your Business Letterhead]
+[Date]
+
+RE: Notice of Data Security Incident
+
+Dear [Customer Name],
+
+We are writing to inform you of a data security incident...
+
+What Information Was Involved:
+[Types of data]
+
+What You Can Do:
+[Credit monitoring, password changes, fraud alerts]
+
+For More Information:
+Contact us at [phone/email]
+
+Sincerely,
+[Your Name]</pre>
+            </div>
+            
+            <div class="template-box">
+                <h4>📝 Regulator Notification</h4>
+                <pre>[Your Business Letterhead]
+[Date]
+
+[State Attorney General / HHS]
+RE: Data Breach Notification
+
+1. Name of Business: [Your Business]
+2. Date of Discovery: [Date]
+3. Description of Incident: [Brief description]
+4. Types of Information Affected: [List]
+5. Number of Individuals Affected: [Number]
+6. Contact for Further Info: [Name, Phone, Email]</pre>
+            </div>
+        </div>
+        
+        <!-- Section 4: Vendor Risk -->
+        <div class="section" id="section-4">
+            <h2>🤝 Module 3: Supplier Risk Register</h2>
+            <p class="section-intro">Assess your critical vendors. Rate each vendor's security posture.</p>
+            
+            <table class="vendor-table">
+                <thead>
+                    <tr>
+                        <th>Vendor</th>
+                        <th>Data Shared</th>
+                        <th>Security Questionnaire</th>
+                        <th>Risk</th>
+                    </tr>
+                </thead>
+                <tbody id="vendorTable">
+                    <tr>
+                        <td><input type="text" placeholder="Vendor name"></td>
+                        <td><input type="text" placeholder="What data?"></td>
+                        <td>
+                            <select>
+                                <option value="">Select...</option>
+                                <option value="complete">Complete</option>
+                                <option value="partial">Partial</option>
+                                <option value="none">None</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select>
+                                <option value="">Select...</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="Vendor name"></td>
+                        <td><input type="text" placeholder="What data?"></td>
+                        <td>
+                            <select>
+                                <option value="">Select...</option>
+                                <option value="complete">Complete</option>
+                                <option value="partial">Partial</option>
+                                <option value="none">None</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select>
+                                <option value="">Select...</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="Vendor name"></td>
+                        <td><input type="text" placeholder="What data?"></td>
+                        <td>
+                            <select>
+                                <option value="">Select...</option>
+                                <option value="complete">Complete</option>
+                                <option value="partial">Partial</option>
+                                <option value="none">None</option>
+                            </select>
+                        </td>
+                        <td>
+                            <select>
+                                <option value="">Select...</option>
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-next" style="margin-top:15px;padding:8px 16px;font-size:0.9rem;" onclick="addVendorRow()">+ Add Vendor</button>
+            
+            <div class="resource-box" style="margin-top:20px;">
+                <h4>🔗 Vendor Security Resources</h4>
+                <a href="https://www.cisa.gov/news-events/alerts/2022/04/20/common-ransomware-infrastructure-techniques" target="_blank">CISA Ransomware Alert</a>
+                <a href="https://www.nist.gov/publications/managing-information-security-risk-vendor-relationships" target="_blank">NIST Vendor Risk Management</a>
+            </div>
+        </div>
+        
+        <!-- Section 5: Backup & Recovery -->
+        <div class="section" id="section-5">
+            <h2>💾 Module 4: Backup & Recovery</h2>
+            <p class="section-intro">Assess your data protection and recovery capabilities.</p>
+            
+            <div class="question">
+                <h3>Backup Strategy — Select all that apply:</h3>
+                <div class="checkbox-group">
+                    <div class="checkbox-item" data-check="bs1"><input type="checkbox"><label>Cloud-to-cloud backups (M365, Google Workspace)</label></div>
+                    <div class="checkbox-item" data-check="bs2"><input type="checkbox"><label>On-premises to cloud backup</label></div>
+                    <div class="checkbox-item" data-check="bs3"><input type="checkbox"><label>Local-only backups (not recommended)</label></div>
+                    <div class="checkbox-item" data-check="bs4"><input type="checkbox"><label>3-2-1 rule followed (3 copies, 2 media types, 1 offsite)</label></div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <h3>When was your backup last tested (successfully restored)?</h3>
+                <div class="options">
+                    <div class="option" data-value="month" data-question="bt1">✓ Within last month</div>
+                    <div class="option" data-value="quarter" data-question="bt1">⚠ Within 3 months</div>
+                    <div class="option" data-value="year" data-question="bt1">⚠ Within year</div>
+                    <div class="option" data-value="never" data-question="bt1">✗ Never tested</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>RTO (Recovery Time Objective) — How long can you be down?</label>
+                <input type="text" id="rto" placeholder="e.g., 4 hours, 24 hours, 1 week">
+            </div>
+            <div class="form-group">
+                <label>RPO (Recovery Point Objective) — How much data can you lose?</label>
+                <input type="text" id="rpo" placeholder="e.g., 1 hour, 24 hours, 1 week">
+            </div>
+        </div>
+        
+        <!-- Section 6: Compliance Page -->
+        <div class="section" id="section-6">
+            <h2>📄 Compliance Declaration Page</h2>
+            <p class="section-intro">This page auto-populates from your responses. Share with insurers, auditors, or stakeholders.</p>
+            
+            <div class="compliance-page">
+                <h3>🛡️ COMPLIANCE DECLARATION</h3>
+                
+                <div class="field">
+                    <label>Business Name:</label>
+                    <div class="field-value" id="cp_bizname">—</div>
+                </div>
+                <div class="field">
+                    <label>Assessment Completed By:</label>
+                    <div class="field-value" id="cp_completedby">—</div>
+                </div>
+                <div class="field">
+                    <label>Date of Assessment:</label>
+                    <div class="field-value" id="cp_date">—</div>
+                </div>
+                <div class="field">
+                    <label>Industry:</label>
+                    <div class="field-value" id="cp_industry">—</div>
+                </div>
+                
+                <div class="field">
+                    <label>Governance:</label>
+                    <div class="field-value" id="cp_governance">Policy: — | Designated Owner: — | Risk Assessments: —</div>
+                </div>
+                <div class="field">
+                    <label>Technical Controls:</label>
+                    <div class="field-value" id="cp_tech">Network: — | Data Protection: —</div>
+                </div>
+                <div class="field">
+                    <label>Backup & Recovery:</label>
+                    <div class="field-value" id="cp_backup">RTO: — | RPO: —</div>
+                </div>
+                
+                <div class="field">
+                    <label>Cyber Insurance (Optional):</label>
+                    <input type="text" id="cp_insurance" placeholder="Carrier & Policy #" style="color:#333;margin-top:5px;">
+                </div>
+                
+                <div style="margin-top:25px;padding-top:15px;border-top:1px solid rgba(255,255,255,0.2);">
+                    <p><strong>Declaration:</strong> This document accurately represents our cybersecurity posture as of the date specified.</p>
+                    <p style="margin-top:15px;"><strong>Signature:</strong> _________________________________</p>
+                    <p><strong>Date:</strong> <span id="cp_sig_date"></span></p>
+                </div>
+            </div>
+            
+            <div style="text-align:center;margin-top:30px;">
+                <button class="btn btn-primary" onclick="window.print()" style="background:#00d4aa;color:#1a1a2e;font-weight:bold;padding:15px 30px;">🖨️ Print / Save as PDF</button>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn btn-prev" id="prevBtn" onclick="changeSection(-1)">← Previous</button>
+            <button class="btn btn-next" id="nextBtn" onclick="changeSection(1)">Next →</button>
+        </div>
+    </div>
+    
+    <script>
+        let currentSection = 1;
+        const totalSections = 6;
+        
+        // Store all responses
+        const responses = {
+            g1: '', g2: '', g3: '',
+            networkSecurity: '',
+            dataProtection: '',
+            rto: '', rpo: '',
+            backupTest: ''
+        };
+        
+        // Initialize
+        document.getElementById('date').value = new Date().toLocaleDateString();
+        
+        // Option selection
+        document.querySelectorAll('.option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                const question = this.dataset.question;
+                const value = this.dataset.value;
+                responses[question] = this.textContent.trim();
+                
+                // Clear siblings
+                this.parentElement.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                updateCompliancePage();
+            });
+        });
+        
+        // Checkbox handling
+        document.querySelectorAll('.checklist-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                if (e.target.type !== 'checkbox') {
+                    const cb = this.querySelector('input[type="checkbox"]');
+                    cb.checked = !cb.checked;
+                }
+                this.classList.toggle('checked', this.querySelector('input').checked);
+            });
+        });
+        
+        // Add vendor row
+        function addVendorRow() {
+            const tbody = document.getElementById('vendorTable');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td><input type="text" placeholder="Vendor name"></td>
+                <td><input type="text" placeholder="What data?"></td>
+                <td><select><option value="">Select...</option><option value="complete">Complete</option><option value="partial">Partial</option><option value="none">None</option></select></td>
+                <td><select><option value="">Select...</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option></select></td>`;
+            tbody.appendChild(tr);
+        }
+        
+        // Navigation
+        function changeSection(direction) {
+            document.getElementById(`section-${currentSection}`).classList.remove('active');
+            currentSection += direction;
+            
+            if (currentSection < 1) currentSection = 1;
+            if (currentSection > totalSections) currentSection = totalSections;
+            
+            document.getElementById(`section-${currentSection}`).classList.add('active');
+            updateProgress();
+            updateCompliancePage();
+            
+            document.getElementById('prevBtn').style.display = currentSection === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').textContent = currentSection === totalSections ? 'Finish' : 'Next →';
+        }
+        
+        function updateProgress() {
+            const progress = (currentSection / totalSections) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+        }
+        
+        // Update Compliance Page
+        function updateCompliancePage() {
+            // Business Info
+            document.getElementById('cp_bizname').textContent = document.getElementById('bizName').value || '—';
+            document.getElementById('cp_completedby').textContent = document.getElementById('completedBy').value || '—';
+            document.getElementById('cp_date').textContent = document.getElementById('date').value;
+            document.getElementById('cp_industry').textContent = document.getElementById('industry').value || '—';
+            
+            // Governance
+            let policy = responses.g1 ? responses.g1.split('—')[1]?.trim() || responses.g1 : '—';
+            let owner = responses.g2 ? responses.g2.split('—')[1]?.trim() || responses.g2 : '—';
+            let risk = responses.g3 ? responses.g3.split('—')[1]?.trim() || responses.g3 : '—';
+            document.getElementById('cp_governance').textContent = `Policy: ${policy} | Owner: ${owner} | Risk: ${risk}`;
+            
+            // Technical Controls
+            document.getElementById('cp_tech').textContent = `Network: ${document.getElementById('networkSecurity').value || '—'} | Data: ${document.getElementById('dataProtection').value || '—'}`;
+            
+            // Backup & Recovery
+            document.getElementById('cp_backup').textContent = `RTO: ${document.getElementById('rto').value || '—'} | RPO: ${document.getElementById('rpo').value || '—'}`;
+            
+            // Signature date
+            document.getElementById('cp_sig_date').textContent = new Date().toLocaleDateString();
+        }
+        
+        // Live update from text fields
+        ['bizName', 'completedBy', 'industry', 'rto', 'rpo', 'networkSecurity', 'dataProtection'].forEach(id => {
+            document.getElementById(id).addEventListener('input', updateCompliancePage);
+        });
+        
+        // Initialize progress
+        updateProgress();
+        document.getElementById('prevBtn').style.display = 'none';
+    </script>
+</body>
+</html>
